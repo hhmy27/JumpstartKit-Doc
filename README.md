@@ -9,9 +9,9 @@
 -   纯本地 App，不需要维护数据
 -   这意味着 App 是资产，能给你持续提供被动收入
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/e7bb21a8-53c5-4141-a2a6-9c3a436ecfe4/6101bb01-96d6-4888-91ea-b10a962781b4/image.png)
+![image.png](https://merciful-sugar-3e6.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fe7bb21a8-53c5-4141-a2a6-9c3a436ecfe4%2F6101bb01-96d6-4888-91ea-b10a962781b4%2Fimage.png?table=block&id=f450da4e-c3b3-4185-ac6b-31e233c883c4&spaceId=e7bb21a8-53c5-4141-a2a6-9c3a436ecfe4&width=1420&userId=&cache=v2)
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/e7bb21a8-53c5-4141-a2a6-9c3a436ecfe4/13314ae1-9fac-49d0-89b7-ad0973a5be45/image.png)
+![image.png](https://merciful-sugar-3e6.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fe7bb21a8-53c5-4141-a2a6-9c3a436ecfe4%2F13314ae1-9fac-49d0-89b7-ad0973a5be45%2Fimage.png?table=block&id=0b90e6d8-a6e6-460e-8b6e-73eafcbf16b3&spaceId=e7bb21a8-53c5-4141-a2a6-9c3a436ecfe4&width=2000&userId=&cache=v2)
 
 # Feature 功能
 
