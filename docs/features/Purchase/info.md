@@ -180,6 +180,31 @@ struct YourApp: App {
 -   `purchase(_ product: Product)`:
     -   作用：发起产品购买
     -   使用场景：用户点击购买按钮时调用
+    在视图中使用：
+    ```swift
+    do {
+        let transaction = try await iapManager.purchase(product)
+        if transaction != nil {
+            // 购买成功，立即更新状态
+            await iapManager.purchaseSuccessSubscriptionStatus()
+        } else {
+            // 购买失败或用户取消
+            throw IAPError.purchaseFailedOrCancelled
+        }
+    } catch let error as IAPError {
+        switch error {
+        case .purchaseFailedOrCancelled:
+            // 处理购买失败或取消
+            print("购买失败或已取消")
+        default:
+            // 处理其他IAP相关错误
+            print("IAP错误: \(error)")
+        }
+    } catch {
+        // 处理其他未预期的错误
+        print("未知错误: \(error)")
+    }
+    ```
 -   `isPurchased(_ product: Product)`:
     -   作用：检查特定产品是否已购买
     -   使用场景：需要验证产品购买状态时调用
