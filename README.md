@@ -1,4 +1,4 @@
-# 文档
+# 介绍
 
 通过此模版代码，你可以快速启动一个 iOS App 项目，节省你的开发时间，快速上线 App
 
@@ -13,7 +13,9 @@
 
 ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/e7bb21a8-53c5-4141-a2a6-9c3a436ecfe4/13314ae1-9fac-49d0-89b7-ad0973a5be45/image.png)
 
-# Purchase | 内购
+# Feature 功能
+
+## Purchase | 内购
 
 使用 StoreKit2 进行内购处理
 
@@ -28,13 +30,13 @@
 -   申请 IAP 内购产品
 -   配置促销优惠
 
-# Notification | 通知
+## Notification | 通知
 
 -   规划定时通知
 -   取消特定通知
 -   通知音效配置
 
-# PayWall | 付费墙
+## PayWall | 付费墙
 
 三套不同风格的付费墙，包括：
 
@@ -42,33 +44,33 @@
 -   用户证言
 -   价格对比
 
-# Widget | 小组件
+## Widget | 小组件
 
 -   快速配置桌面小组件，锁屏小组件
 -   联动 CoreData，通过 App Group 共享数据
 -   通过 TrackingKit 同步 CoreData 数据
 
-# Onboarding | 引导
+## Onboarding | 引导
 
 -   引导页面框架，可以随意扩展引导页
 
-# Toast | 全局弹窗
+## Toast | 全局弹窗
 
 -   报错、提示、警告的全局弹窗
 
-# Design | UI 风格
+## Design | UI 风格
 
 -   DesignSystem 统一管理所有圆角、padding、阴影、字体
 
-# Icon Picker | App 图标
+## Icon Picker | App 图标
 
 -   适配 iOS 17+的图标更换功能
 
-# Language | 多语言切换
+## Language | 多语言切换
 
 -   一键切换多语言
 
-# Theme | 多主题切换
+## Theme | 多主题切换
 
 -   一键切换多主题
 
@@ -80,11 +82,17 @@
 
 帮助你快速上架一款 iOS App
 
+关于模版代码的使用问题
+
 # 如何使用？
 
 你可以快速的将代码模版应用到你的项目中
 
-随时为你的 App 添加特定功能，而不需要再费尽心思的从 0 开始
+随时为你的 App 添加特定功能，而不需要再费尽心思的从零开始写代码
+
+# 退款？
+
+知识产品，一旦购买，没有退款机制，谢谢理解
 
 # 价格？
 
