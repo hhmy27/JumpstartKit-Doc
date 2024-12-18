@@ -2,7 +2,7 @@
 
 本篇文章会教你如何设置内购，以及如何使用 JumpstartKit 处理内购
 
-代码使用的是 StoreKit 2，这是苹果官方的最新内购框架
+代码使用的是 StoreKit 2，这是苹果官方的最新内购框架，少一个第三方依赖，就少一份风险。
 
 # 内购类型
 
@@ -56,9 +56,11 @@ StoreKit 不会为消耗品保存购买凭证，只会为消耗品保存购买�
 
 IAP（非消耗型）：1 个终身会员
 
-订阅：月度会员+年度会员
+订阅：月度会员、年度会员
 
 为你的月度订阅，提供 3 天免费试用，为年度订阅，提供 7 天免费试用
+
+这也是大多数 App 的常见用法
 
 ## 价格方案
 
@@ -66,13 +68,18 @@ IAP（非消耗型）：1 个终身会员
 
 比如说某个 App：
 
-月度会员 $1
-
-年度会员 $6
-
-终身会员 $12
+-   月度会员 $1
+-   年度会员 $6
+-   终身会员 $12
 
 这个价格就比较合理
+
+或者你可以将月度会员作为锚点，引导用户购买年度会员、终身会员：
+
+-   周度/月度会员 $9.9
+-   年度会员 $100
+
+像这种情况会把周度/月度会员设置得很贵，但是提供试用，真正引导用户购买的是年度会员
 
 # 在代码中获取内购项目
 
@@ -101,17 +108,13 @@ Auto-Renewable subscriptions
 
 ## 内购和 App 的审核是分开的
 
-如果你是第一次提交，那么内购和 App 是同时审核
+如果你是第一次提交，那么内购和 App 是同时审核，之后的审核都是分开的
 
-之后的审核都是分开的
+所以在你的 App 通过审核之后，后续修改内购，可能会出现这种情况：App 改好代码，上线了，但是内购还没有审核通过，导致无法购买，一定要确认内购审核通过。
 
-所以可能会出现这种情况：App 改好代码，上线了，但是内购还没有审核通过，导致无法购买
+但是在测试的时候，就是我们还没有提交的时候，我们是可以通过沙盒环境获取到你所有的内购配置的，方便我们进行测试
 
-一定要确认内购审核通过
-
-但是在测试的时候，就是我们还没有提交的时候，我们是可以通过沙盒环境获取到你所有的内购配置的
-
-## 网络并不稳定
+## 网络并不稳定，需要兜底
 
 只要涉及到网络，就没有可靠的
 
@@ -127,9 +130,9 @@ Auto-Renewable subscriptions
 
 ## 试用策略，只能享受一次
 
-如果用户享受了一次试用，但是你第二次仍然展示可以试用，属于错误引导，当用户退款的时候，对你来说是没有优势的，应该避免这个问题。
+如果用户享受了一次试用，但是你第二次仍然展示可以试用，属于错误引导，应该避免这个问题。
 
-JumpstartKit 中也有对应的判断方法。
+JumpstartKit 中也有对应的判断方法，避免这个问题
 
 # 使用 JumpstartKit 处理内购
 
@@ -164,7 +167,14 @@ struct YourApp: App {
 
 ## IAPManager 介绍
 
-用于处理用户内购，功能包括：产品查询、购买处理、购买恢复、订阅状态判断、兜底逻辑等
+用于处理用户内购，功能包括：产品查询、购买处理、购买恢复、订阅状态判断、兜底逻辑等。
+
+其中最重要的两个函数是：
+
+-   `purchase(_ product: Product)`: 处理购买请求
+-   `restorePurchases()`: 处理回复订阅
+
+其它函数是工具，根据你的需要使用
 
 ### 1. 产品管理
 
@@ -180,31 +190,6 @@ struct YourApp: App {
 -   `purchase(_ product: Product)`:
     -   作用：发起产品购买
     -   使用场景：用户点击购买按钮时调用
-    在视图中使用：
-    ```swift
-    do {
-        let transaction = try await iapManager.purchase(product)
-        if transaction != nil {
-            // 购买成功，立即更新状态
-            await iapManager.purchaseSuccessSubscriptionStatus()
-        } else {
-            // 购买失败或用户取消
-            throw IAPError.purchaseFailedOrCancelled
-        }
-    } catch let error as IAPError {
-        switch error {
-        case .purchaseFailedOrCancelled:
-            // 处理购买失败或取消
-            print("购买失败或已取消")
-        default:
-            // 处理其他IAP相关错误
-            print("IAP错误: \(error)")
-        }
-    } catch {
-        // 处理其他未预期的错误
-        print("未知错误: \(error)")
-    }
-    ```
 -   `isPurchased(_ product: Product)`:
     -   作用：检查特定产品是否已购买
     -   使用场景：需要验证产品购买状态时调用
@@ -250,3 +235,60 @@ struct YourApp: App {
 -   `clearStoredData()`:
     -   作用：清除存储的购买数据
     -   使用场景：仅用于测试环境，清除购买状态
+
+## 使用方法
+
+下面是一个调用 iapManager 的例子，你可以扩展错误处理等逻辑
+
+在视图中，当用户点击购买按钮时，调用`iapManager.purchase(product)`
+
+```swift
+private func performPurchase() {
+    guard let product = selectedProduct else { return }
+    isLoading = true
+    Task {
+        do {
+            let transaction = try await iapManager.purchase(product)
+            if transaction != nil {
+                alertMessageKey = LocalizedStringKey("Purchase successful!")
+                await iapManager.purchaseSuccessSubscriptionStatus()
+            } else {
+                alertMessageKey = LocalizedStringKey("Purchase pending.")
+            }
+        } catch StoreError.failedVerification {
+            alertMessageKey = LocalizedStringKey("Purchase verification failed.")
+        } catch {
+            alertMessageKey = LocalizedStringKey("Purchase failed: ")
+            alertErrorMessage = error.localizedDescription
+        }
+        isLoading = false
+        showAlert = true
+    }
+}
+```
+
+如果你需要恢复内购，你可以使用如下代码：
+
+```swift
+private func performRestore() {
+    isLoading = true // 进度条，提示用户加载中
+    Task {
+        do {
+            let hasPurchases = try await iapManager.restorePurchases()
+            if hasPurchases {
+                alertMessageKey = LocalizedStringKey("Restore successful!")
+                await iapManager.purchaseSuccessSubscriptionStatus()
+            } else {
+                alertMessageKey = LocalizedStringKey("No purchases to restore.")
+            }
+        } catch {
+            alertMessageKey = LocalizedStringKey("Restore failed: ")
+            alertErrorMessage = error.localizedDescription
+        }
+        isLoading = false
+        showAlert = true
+    }
+}
+```
+
+你可以根据业务需求，决定是否渲染 loading，或者展示 alert

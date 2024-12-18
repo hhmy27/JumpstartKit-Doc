@@ -38,7 +38,7 @@ Xcode 只会识别 `Text(”Hello World”)` 这样的文案，把`”Hello Worl
 
 这里又有一个坑，有时候你使用 LocalizedStringResource 翻译完毕后，在模拟器中发现并没有翻译过来，还是展示英文，当你确定 String Catalog 含有你翻译的文本，那么你可以使用真机进行测试，或者打包 testflight，在真机上查看是否翻译完毕
 
-# JumpstartKit 切换多语言
+# 使用 JumpstartKit 管理多语言
 
 如果你需要让用户自行选择语言，那么你就需要这个功能了
 
@@ -101,7 +101,7 @@ Locale.availableIdentifiers.forEach { identifier in
 
 用于实时切换界面语言的 SwiftUI 修饰符
 
-### 使用方法
+## 使用方法
 
 1. 初始化语言管理器：
 
@@ -110,7 +110,7 @@ Locale.availableIdentifiers.forEach { identifier in
 @StateObject private var languageManager = LanguageManager()
 ```
 
-2. 添加修饰符
+1. 添加修饰符
 
 ```swift
 // 在ContentView根视图注入languageManager，同时添加修饰符
@@ -119,7 +119,7 @@ ContentView()
 	.modifier(LocalizationModifier(language: languageManager.language))
 ```
 
-3. 在视图中，可以通过下面的方法来切换多语言
+1. 在视图中，可以通过下面的方法来切换多语言
 
 ```swift
 // 获取环境变量

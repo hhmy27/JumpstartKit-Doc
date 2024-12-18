@@ -1,18 +1,20 @@
 # 介绍
 
-App 通知相关的代码
+通知对 App 来说非常重要，大多数 App 都会要求申请通知权限，来发送 App 相关的通知。
 
-`NotificationConfig`
+这里我会介绍如何用 JumpstartKit 来管理通知
 
-`NotificationError`
+# 使用 JumpstartKit 管理通知
 
-`NotificationManager`
+JumpstartKit 中，和通知有关的代码有如下 5 个模块
 
-通知音效相关的代码
-
-`NotificationSoundManager`
-
-`NotificationSoundType`
+-   App 通知相关的代码
+    `NotificationConfig`
+    `NotificationError`
+    `NotificationManager`
+-   通知音效相关的代码
+    `NotificationSoundManager`
+    `NotificationSoundType`
 
 ## 1. NotificationConfig
 
@@ -32,7 +34,7 @@ struct NotificationConfig {
 
 SwiftUI 支持三种类型的通知，有时间间隔通知、固定时间通知、位置通知（需要申请权限）
 
-根据你的需要，你可以修改 NotificationConfig，设置对应的通知类型，和具体时间、位置
+根据你的需要，你可以修改扩展 NotificationConfig，设置对应的通知类型，和具体时间、位置
 
 ## 2. NotificationError
 
@@ -105,12 +107,13 @@ enum NotificationSoundType: String, CaseIterable {
 
 在这里面添加你的通知音效
 
-## 使用示例
+## 使用方法
 
 ### 基本设置
 
 ```swift
 // 在合适的时机请求通知权限
+// 比如说onboarding页面中
 let hasPermission = await NotificationManager.shared.requestPermission(
 ```
 
@@ -120,10 +123,10 @@ let hasPermission = await NotificationManager.shared.requestPermission(
 // 创建通知配置
 let config = NotificationConfig(
     id: "reminder_123", // 根据业务决定
-    title: "提醒",
-    body: "该喝水了",
-    soundType: .arpeggio,
-    times: [.init(hour: 9, minute: 0)]
+    title: "你的App名字", // 根据业务决定
+    body: "该喝水了", // 根据业务决定
+    soundType: .arpeggio, // 自定义音效
+    times: [.init(hour: 9, minute: 0)] // 根据你的需求，决定通知时间，可以修改Config扩展
 )
 
 // 调度通知
@@ -143,7 +146,7 @@ NotificationSoundManager.shared.selectedSound = .magic
 
 ## 上传音效
 
-下载 m4r 的资源文件，直接添加到 Xcode 项目里面，不需要特殊的配置
+Xcode 需要的音效文件是 m4r 格式，直接添加到 Xcode 项目里面即可，不需要特殊的配置
 
 推荐一个音效相关的网站：
 
