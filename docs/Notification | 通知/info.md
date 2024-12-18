@@ -149,7 +149,6 @@ NotificationSoundManager.shared.selectedSound = .magic
 Xcode 需要的音效文件是 m4r 格式，直接添加到 Xcode 项目里面即可，不需要特殊的配置
 
 推荐一个音效相关的网站：
-
 https://notificationsounds.com/
 
 可以直接下载 m4r 的资源，免费
