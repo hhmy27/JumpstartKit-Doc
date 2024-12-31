@@ -136,11 +136,11 @@ JumpstartKit 中也有对应的判断方法，避免这个问题
 
 # 使用 JumpstartKit 处理内购
 
-JumpstartKit 中处理内购的是`IAPManager`
+JumpstartKit 中处理内购和订阅的工具是`IAPManager`
 
 ## 注入代码
 
-在 App 启动的时候，通过下面的代码就能注入`IAPManager`
+在 App 启动时注入 IAPManager：
 
 ```swift
 struct YourApp: App {
@@ -157,90 +157,77 @@ struct YourApp: App {
 
 ## 配置内购项目
 
-创建一个 Property List，就是字典，命名为 ProductList，用来管理你的内购项目
+1. 创建一个名为 ProductList.plist 的属性列表文件
+2. 设置为字典类型
+3. 添加你的内购项目标识符，例如：
+    - Pro Monthly: com.yourapp.pro.subscription.monthly
+    - Pro Annual: com.yourapp.pro.subscription.annual
+    - Pro Lifetime: com.yourapp.pro.lifetime
 
-比如说我创建了三个内购项目，KV 分别是
+这里会决定给用户展示何种内购项目
 
--   Pro Monthly: com.tutorial.yourapp.pro.subscription.monthly
--   Pro Annual: com.tutorial.yourapp.pro.subscription.annual
--   Pro Lifetime: com.tutorial.yourapp.pro.lifetime
+## IAPManager 核心功能
 
-## IAPManager 介绍
+### 1. 主要属性
 
-用于处理用户内购，功能包括：产品查询、购买处理、购买恢复、订阅状态判断、兜底逻辑等。
+-   `purchasedProducts`: 用户已购买的产品列表
+-   `storeProducts`: App Store 中可用的产品列表
+-   `isPremiumUser`: 判断用户是否是会员
+-   `isUserPurchased`: 用户购买状态（存储在 UserDefaults）
 
-其中最重要的两个函数是：
-
--   `purchase(_ product: Product)`: 处理购买请求
--   `restorePurchases()`: 处理回复订阅
-
-其它函数是工具，根据你的需要使用
-
-### 1. 产品管理
+### 2. 产品管理
 
 -   `requestProducts()`:
     -   作用：从 App Store 获取可用产品列表
-    -   使用场景：应用启动时或需要刷新产品列表时调用
--   `updateCustomerProductStatus()`:
-    -   作用：更新用户已购买产品的状态
-    -   使用场景：购买完成后或需要刷新购买状态时调用
+    -   使用：应用启动时自动调用
+    -   特点：会自动对产品进行排序
 
-### 2. 购买功能
+### 3. 购买功能
 
 -   `purchase(_ product: Product)`:
-    -   作用：发起产品购买
-    -   使用场景：用户点击购买按钮时调用
--   `isPurchased(_ product: Product)`:
-    -   作用：检查特定产品是否已购买
-    -   使用场景：需要验证产品购买状态时调用
--   `hasEverPurchased(_ productId: String)`:
-    -   作用：检查指定产品 ID 是否曾经购买过
-    -   使用场景：检查历史购买记录时使用
+    -   作用：处理产品购买请求
+    -   返回：`StoreKit.Transaction?`
 
-### 3. 订阅管理
+### 4. 订阅管理
 
 -   `checkAndUpdateSubscriptionStatus()`:
-    -   作用：检查并更新订阅状态
-    -   使用场景：定期检查订阅状态或应用启动时调用
--   `purchaseSuccessSubscriptionStatus()`:
-    -   作用：购买成功后更新订阅状态
-    -   使用场景：成功完成购买后调用
--   `isEligibleForFreeTrial()`:
-    -   作用：检查用户是否符合免费试用资格
-    -   使用场景：展示试用选项前调用
 
-### 4. 购买恢复
+    -   作用：检查并更新订阅状态
+    -   特点：包含 7 天的缓存机制，避免频繁检查
+
+-   `purchaseSuccessSubscriptionStatus()`:
+
+    -   作用：购买成功后更新订阅状态
+    -   使用：购买完成后调用
+
+-   `isEligibleForFreeTrial()`:
+    -   作用：检查产品是否符合免费试用资格
+    -   使用：展示试用选项前调用
+
+### 5. 购买恢复
+
+-   `restorePurchases()`:
+
+    -   作用：恢复用户之前的购买
+    -   特点：会验证商品是否在当前 plist 列表中
+    -   返回：是否存在有效购买
 
 -   `getPurchaseHistory()`:
-    -   作用：获取用户的购买历史记录
-    -   使用场景：需要查看历史购买记录时调用
--   `restorePurchases()`:
-    -   作用：恢复用户之前的购买
-    -   使用场景：用户更换设备或重新安装应用时调用
+    -   作用：获取带有购买类型的完整购买历史
+    -   返回：交易记录和购买类型的元组数组
 
-### 5. 工具方法
+### 6. 状态更新
 
--   `checkVerified()`:
-    -   作用：验证交易结果的有效性
-    -   使用场景：内部使用，验证购买交易
--   `checkPurchaseType()`:
-    -   作用：检查购买类型（普通购买、兑换码等）
-    -   使用场景：处理不同类型的购买时使用
--   `checkForActivePurchases()`:
-    -   作用：检查是否有活跃的购买
-    -   使用场景：验证用户权限时使用
+-   `updateCustomerProductStatus()`:
+    -   作用：更新用户已购买产品状态
+    -   特点：
+        -   自动过滤已退款商品
+        -   检查订阅是否过期
+        -   处理非消耗品和永久会员
 
-### 6. 调试功能
+## 使用示例
 
--   `clearStoredData()`:
-    -   作用：清除存储的购买数据
-    -   使用场景：仅用于测试环境，清除购买状态
-
-## 使用方法
-
-下面是一个调用 iapManager 的例子，你可以扩展错误处理等逻辑
-
-在视图中，当用户点击购买按钮时，调用`iapManager.purchase(product)`
+### 购买商品
 
 ```swift
 private func performPurchase() {
@@ -250,45 +237,54 @@ private func performPurchase() {
         do {
             let transaction = try await iapManager.purchase(product)
             if transaction != nil {
-                alertMessageKey = LocalizedStringKey("Purchase successful!")
                 await iapManager.purchaseSuccessSubscriptionStatus()
-            } else {
-                alertMessageKey = LocalizedStringKey("Purchase pending.")
+                // 处理购买成功
             }
-        } catch StoreError.failedVerification {
-            alertMessageKey = LocalizedStringKey("Purchase verification failed.")
         } catch {
-            alertMessageKey = LocalizedStringKey("Purchase failed: ")
-            alertErrorMessage = error.localizedDescription
+            // 处理错误
         }
         isLoading = false
-        showAlert = true
     }
 }
 ```
 
-如果你需要恢复内购，你可以使用如下代码：
+### 恢复购买
 
 ```swift
 private func performRestore() {
-    isLoading = true // 进度条，提示用户加载中
+    isLoading = true
     Task {
         do {
             let hasPurchases = try await iapManager.restorePurchases()
             if hasPurchases {
-                alertMessageKey = LocalizedStringKey("Restore successful!")
                 await iapManager.purchaseSuccessSubscriptionStatus()
-            } else {
-                alertMessageKey = LocalizedStringKey("No purchases to restore.")
+                // 处理恢复成功
             }
         } catch {
-            alertMessageKey = LocalizedStringKey("Restore failed: ")
-            alertErrorMessage = error.localizedDescription
+            // 处理错误
         }
         isLoading = false
-        showAlert = true
     }
 }
 ```
 
-你可以根据业务需求，决定是否渲染 loading，或者展示 alert
+## 注意事项
+
+1. IAPManager 在初始化时会自动：
+
+    - 从 plist 加载产品列表
+    - 开始监听交易更新
+    - 请求产品信息
+    - 更新用户产品状态
+
+2. 订阅状态检查有缓存机制：
+
+    - 对于已购买用户，7 天内不重复检查
+    - 可以减少对 App Store 的请求频率
+
+3. 新增商品时：
+
+    - 必须更新 ProductList.plist
+    - 确保商品 ID 在 plist 中存在
+
+4. 测试时可使用 `clearStoredData()` 清除购买状态
