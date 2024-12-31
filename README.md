@@ -1,8 +1,9 @@
 # 介绍
 
-| 在线阅读：https://merciful-sugar-3e6.notion.site/iOS-JumpstartKit-15f317b9600680ca8eeec10d67daed1f
+| 官网：https://www.jumpstartkit.dev/
 
-通过此模版代码，你可以快速启动一个 iOS App 项目，节省你的开发时间，快速上线 App
+本仓库是 **JumpstartKit** 的使用文档
+通过 JumpstartKit，你可以快速启动一个 iOS App 项目，节省你的开发时间，快速上线 App
 
 特点：
 
@@ -132,38 +133,6 @@
 
 任何时候买入都是最低价
 
-## 基础
-
-全套文档 ✅
-
-全套代码 ✅
-
-discord 社群 ❌
-
-终身更新 ❌
-
-价格 ¥399
-
-## 终身 Pro
-
-全套文档 ✅
-
-全套代码 ✅
-
-discord 社群 ✅
-
-终身更新 ✅
-
-一款 JumpstartKit 打造的 App 源代码，帮助你快速上手 🤩
-
-~~价格 ¥599~~
-
-早鸟价格 ¥499，限前 50 名
-
 # 购买联系方式
 
-微信：hhmy-27，注明来意
-
-discord：hhmy
-
-推特：https://x.com/hhmy27
+微信：**hhmy-27**，请注明 JumpstartKit
